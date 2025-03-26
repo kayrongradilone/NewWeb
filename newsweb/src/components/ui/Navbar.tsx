@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
 
 const Navbar = () => {
+ 
   const pathname = usePathname();
   const { isDarkMode, toggleTheme }: any = useContext(ThemeContext);
 

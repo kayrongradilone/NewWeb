@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import SearchInput from "./SearchInput"; 
+import Image from "next/image";
 
 interface Artigo {
   title?: string;
@@ -42,8 +43,10 @@ const Noticias = () => {
         } else {
           setErro("Nenhuma notícia encontrada.");
         }
-      } catch (err) {
+      }catch (err) {
+        console.error(err); // Aqui você pode logar o erro no console para depuração
         setErro("Falha ao carregar notícias.");
+      
       } finally {
         setCarregando(false);
       }
@@ -92,7 +95,7 @@ const Noticias = () => {
       <Card key={index} className="overflow-hidden shadow-lg">
         {/* Exibe a imagem se existir */}
         {artigo.image_url && (
-          <img
+          <Image
             src={artigo.image_url}
             alt={artigo.title || "Imagem da notícia"}
             className="w-full h-48 object-cover"
