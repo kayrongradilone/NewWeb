@@ -12,23 +12,34 @@ import Link from "next/link";
 import { Button } from "./button";
 import MobileMenu from "./MobileMenu";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { ThemeContext } from "@/context/themeContext";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { isDarkMode, toggleTheme }: any = useContext(ThemeContext);
 
   const navBarLinks = [
     { name: "Notícias", href: "/news", dropdown: false },
-    { name: "Serviços", href: "#", dropdown: true, subLinks: [
+    {
+      name: "Serviços",
+      href: "#",
+      dropdown: true,
+      subLinks: [
         { name: "Desenvolvimento Web", href: "/services/web-development" },
-        { name: "APP Mobile", href: "/services/app" }
-      ]
+        { name: "APP Mobile", href: "/services/app" },
+      ],
     },
     { name: "Contatos", href: "/contacts", dropdown: false },
     { name: "Sobre", href: "/about", dropdown: false },
   ];
 
   return (
-    <header className="py-4 bg-white text-gray-900 transition-colors shadow-md border duration-300">
+    <header
+      className={`py-4 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+      } transition-colors shadow-md border duration-300`}
+    >
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <div className="text-xl font-bold">
@@ -74,13 +85,15 @@ const Navbar = () => {
 
         {/* Dark Mode e Botão de Login */}
         <div className="hidden lg:flex items-center space-x-4">
-          <div className="flex items-center">
+          <div className="flex items-center" onClick={toggleTheme}>
             <span className="mr-2">Modo Escuro</span>
-            <Switch />
+            <Switch></Switch>
           </div>
-          <Button className="px-6 ml-6" variant="default">
-            Login
-          </Button>
+          <Link href="/login">
+            <Button className="px-6 ml-6" variant="default">
+              Login
+            </Button>
+          </Link>
         </div>
 
         {/* Menu Hamburguer Mobile */}
