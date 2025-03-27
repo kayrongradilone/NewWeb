@@ -12,21 +12,7 @@ Tailwind CSS (Estilização)
 
 Axios (Requisições HTTP)
 
-Express.js (Backend API - Opcional)
-
-📂 Estrutura do Projeto
-
-📂 projeto-noticias
-│-- 📂 src
-│   │-- 📂 components (Componentes reutilizáveis)
-│   │-- 📂 pages
-│   │   │-- 📂 news (Página de notícias)
-│   │   │-- 📂 api (Integração com backend)
-│   │-- 📂 service (Serviços de API)
-│   │-- 📂 styles (Estilos gerais)
-│-- 📂 public (Imagens e assets)
-│-- package.json (Dependências)
-│-- README.md (Documentação)
+Express.js (Backend API)
 
 🔧 Configuração e Instalação
 
@@ -86,9 +72,7 @@ O projeto utiliza Tailwind CSS para estilização e componentes reutilizáveis.
 
 🔹 Implementar testes automatizados
 
-📝 Licença
 
-Este projeto está sob a licença MIT.
 
 🚀 Desenvolvido por Kayron Gradilone
 
