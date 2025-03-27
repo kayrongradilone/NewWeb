@@ -1,16 +1,20 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import * as newsService from "../../../service/NewsService"; // Supondo que seus serviços estão nesse caminho
+import * as newsService from "../../../service/NewsService"; 
 
 interface Artigo {
   id: string;
   title: string;
   descricao: string;
   url: string;
+  imagem?: string;
 }
+
+const UNSPLASH_ACCESS_KEY = "U90ozLCCnm_5RNHTGa_UkulDbm7Vh26jN0fYMRJW1dE"; 
 
 const Noticias = () => {
   const [artigos, setArtigos] = useState<Artigo[]>([]);
@@ -20,14 +24,19 @@ const Noticias = () => {
   const [novoTitulo, setNovoTitulo] = useState<string>("");
   const [novaDescricao, setNovaDescricao] = useState<string>("");
 
-  const formularioEdicaoRef = useRef<HTMLDivElement | null>(null); // Ref para o formulário de edição
+  const formularioEdicaoRef = useRef<HTMLDivElement | null>(null);
 
-  // Buscar as notícias ao carregar o componente
   useEffect(() => {
     const buscarNoticias = async () => {
       try {
-        const data = await newsService.getNoticias(); // Chama o serviço para pegar as notícias
-        setArtigos(data);
+        const data = await newsService.getNoticias();
+        const artigosComImagens = await Promise.all(
+          data.map(async (artigo: Artigo) => ({
+            ...artigo,
+            imagem: await buscarImagemAleatoria(),
+          }))
+        );
+        setArtigos(artigosComImagens);
       } catch (error) {
         setErro("Erro ao carregar notícias.");
         console.error(error);
@@ -37,21 +46,31 @@ const Noticias = () => {
     };
 
     buscarNoticias();
-  }, []);
+  }, [editando]);
 
-  // Função para editar uma notícia
+  const buscarImagemAleatoria = async (): Promise<string> => {
+    try {
+      const response = await axios.get("https://api.unsplash.com/photos/random", {
+        params: { query: "news", client_id: UNSPLASH_ACCESS_KEY },
+      });
+
+      return response.data.urls?.regular || "";
+    } catch (error) {
+      console.error("Erro ao buscar imagem do Unsplash:", error);
+      return "https://via.placeholder.com/600x400?text=Imagem+Indisponível"; 
+    }
+  };
+
   const handleEditar = (artigo: Artigo) => {
     setEditando(artigo);
     setNovoTitulo(artigo.title);
     setNovaDescricao(artigo.descricao);
 
-    // Rolando para o formulário de edição
     if (formularioEdicaoRef.current) {
       formularioEdicaoRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  // Função para salvar as edições de uma notícia
   const handleSalvarEdicao = async () => {
     if (editando) {
       try {
@@ -65,14 +84,13 @@ const Noticias = () => {
             artigo.id === editando.id ? updatedNoticia : artigo
           )
         );
-        setEditando(null); // Limpa o estado de edição
+        setEditando(null);
       } catch (error) {
         console.error("Erro ao salvar edição:", error);
       }
     }
   };
 
-  // Função para excluir uma notícia
   const handleExcluir = async (id: string) => {
     try {
       await newsService.excluirNoticia(id);
@@ -88,34 +106,34 @@ const Noticias = () => {
     <div className="max-w-6xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Últimas Notícias</h2>
 
-      {/* Exibe um erro caso haja */}
       {erro && <p className="text-center text-red-500">{erro}</p>}
 
-      {/* Exibe um carregamento enquanto as notícias estão sendo carregadas */}
       {carregando ? (
         <div className="text-center">
           <p>Carregando notícias...</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Renderiza os artigos */}
-          {artigos.map((artigo) => (
-            <Card key={artigo.id} className="overflow-hidden shadow-lg">
+          {artigos.map((artigo, index) => (
+            <Card key={index} className="overflow-hidden shadow-lg">
+              {artigo.imagem && (
+                <img
+                  src={artigo.imagem}
+                  alt={artigo.title}
+                  className="w-full h-48 object-cover"
+                />
+              )}
               <CardHeader>
                 <CardTitle>{artigo.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4" >
+                <p className="text-gray-600 mb-4">
                   {artigo.descricao && artigo.descricao.length > 5000
                     ? artigo.descricao.slice(0, 100) + "..."
                     : artigo.descricao || "Sem descrição disponível"}
                 </p>
-                {/* Botões de editar e excluir */}
                 <div className="flex flex-col gap-2 mt-auto">
-                  <Button
-                    onClick={() => handleEditar(artigo)}
-                    className="w-full"
-                  >
+                  <Button onClick={() => handleEditar(artigo)} className="w-full">
                     Editar
                   </Button>
                   <Button
@@ -132,12 +150,8 @@ const Noticias = () => {
         </div>
       )}
 
-      {/* Formulário de edição */}
       {editando && (
-        <div
-          ref={formularioEdicaoRef} // Ref para controlar o scroll
-          className="mt-8 p-6 border rounded-lg shadow-lg"
-        >
+        <div ref={formularioEdicaoRef} className="mt-8 p-6 border rounded-lg shadow-lg">
           <h3 className="text-xl font-semibold mb-4">Editar Notícia</h3>
 
           <label className="block mb-2">Título</label>
