@@ -8,7 +8,7 @@ const Contatos = () => {
       <h2 className="text-2xl font-bold mb-4 text-center">Entre em Contato</h2>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Informações de Contato */}
+      
         <Card>
           <CardHeader>
             <CardTitle>Informações de Contato</CardTitle>
@@ -29,7 +29,7 @@ const Contatos = () => {
           </CardContent>
         </Card>
 
-        {/* Formulário de Contato */}
+        
         <Card>
           <CardHeader>
             <CardTitle>Envie uma Mensagem</CardTitle>
@@ -45,7 +45,7 @@ const Contatos = () => {
         </Card>
       </div>
 
-      {/* Mapa */}
+      
       <div className="mt-6">
         <h3 className="text-xl font-semibold mb-4">Nossa Localização</h3>
         <iframe

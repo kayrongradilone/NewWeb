@@ -70,7 +70,6 @@ export default function SobrePlathanus() {
           </CardContent>
         </Card>
       </section>
-
       <Separator />
 
       <footer className="text-center">
