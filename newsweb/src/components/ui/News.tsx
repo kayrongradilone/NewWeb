@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import * as newsService from "../../../service/NewsService"; 
+import * as newsService from "../../../service/NewsService";
 
 interface Artigo {
   id: string;
@@ -14,7 +14,7 @@ interface Artigo {
   imagem?: string;
 }
 
-const UNSPLASH_ACCESS_KEY = "U90ozLCCnm_5RNHTGa_UkulDbm7Vh26jN0fYMRJW1dE"; 
+const UNSPLASH_ACCESS_KEY = "U90ozLCCnm_5RNHTGa_UkulDbm7Vh26jN0fYMRJW1dE";
 
 const Noticias = () => {
   const [artigos, setArtigos] = useState<Artigo[]>([]);
@@ -25,6 +25,10 @@ const Noticias = () => {
   const [novaDescricao, setNovaDescricao] = useState<string>("");
 
   const formularioEdicaoRef = useRef<HTMLDivElement | null>(null);
+
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  
 
   useEffect(() => {
     const buscarNoticias = async () => {
@@ -57,7 +61,7 @@ const Noticias = () => {
       return response.data.urls?.regular || "";
     } catch (error) {
       console.error("Erro ao buscar imagem do Unsplash:", error);
-      return "https://via.placeholder.com/600x400?text=Imagem+Indisponível"; 
+      return "https://via.placeholder.com/600x400?text=Imagem+Indisponível";
     }
   };
 
@@ -115,7 +119,7 @@ const Noticias = () => {
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
           {artigos.map((artigo, index) => (
-            <Card key={index} className="overflow-hidden shadow-lg">
+            <Card key={index} className="overflow-hidden shadow-lg flex flex-col h-full">
               {artigo.imagem && (
                 <img
                   src={artigo.imagem}
@@ -126,11 +130,9 @@ const Noticias = () => {
               <CardHeader>
                 <CardTitle>{artigo.title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  {artigo.descricao && artigo.descricao.length > 5000
-                    ? artigo.descricao.slice(0, 100) + "..."
-                    : artigo.descricao || "Sem descrição disponível"}
+              <CardContent className="flex flex-col grow">
+                <p className="text-gray-600 mb-4 break-words">
+                  {artigo.descricao || "Sem descrição disponível"}
                 </p>
                 <div className="flex flex-col gap-2 mt-auto">
                   <Button onClick={() => handleEditar(artigo)} className="w-full">
